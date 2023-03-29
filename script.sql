@@ -1,83 +1,72 @@
+DROP TYPE IF EXISTS DIFFICULTY CASCADE;
 DROP TABLE IF EXISTS
-	PERSON,
-	ACTION,
-	ANIMAL,
-	SOUND,
-	PERSON_ACTION,
-	ANIMAL_ACTION
+	society,
+	city,
+	task,
+	culture,
+	barrier,
+	society_have_culture,
+	society_have_task
 	CASCADE;
-
-
-
-CREATE TABLE PERSON(
-	id serial  PRIMARY KEY,
-	name text NOT NULL,
-	age smallint NOT NULL
-					CHECK(age>0)
-);
-
-CREATE TABLE ANIMAL(
-	id serial PRIMARY KEY,
+CREATE TYPE DIFFICULTY AS ENUM ('easy', 'normal', 'hard');
+CREATE TABLE society(
+    id serial PRIMARY KEY,
 	name text NOT NULL
 );
-
-CREATE TABLE ACTION(
+CREATE TABLE city(
 	id serial PRIMARY KEY,
-	name text NOT NULL
+	name text NOT NULL UNIQUE,
+	id_society INTEGER REFERENCES society(id) ON DELETE CASCADE NOT NULL 
 );
-
-CREATE TABLE SOUND(
+CREATE TABLE task(
 	id serial PRIMARY KEY,
-	name text NOt NULL,
-	person_id INTEGER REFERENCES PERSON(id) ON DELETE SET NULL,
-	animal_id INTEGER REFERENCES ANIMAL(id) ON DELETE SET NULL
+	name text NOT NULL UNIQUE,
+	difficulty DIFFICULTY
 );
-
-CREATE TABLE PERSON_ACTION(
+CREATE TABLE culture(
 	id serial PRIMARY KEY,
-	action_id INTEGER REFERENCES ACTION(id) ON DELETE CASCADE,
-	person_id INTEGER REFERENCES PERSON(id) ON DELETE CASCADE
+	name text NOT NULL UNIQUE
 );
-CREATE TABLE ANIMAL_ACTION(
+CREATE TABLE barrier(
 	id serial PRIMARY KEY,
-	action_id INTEGER REFERENCES ACTION(id) ON DELETE CASCADE,
-	animal_id INTEGER REFERENCES ANIMAL(id) ON DELETE CASCADE
+	name text NOT NULL UNIQUE,
+	id_city INTEGER REFERENCES city(id) ON DELETE CASCADE NOT NULL 
 );
-
-INSERT INTO PERSON(name, age)
+CREATE TABLE society_have_culture(
+	id serial PRIMARY KEY,
+	id_society INTEGER REFERENCES society(id) ON DELETE CASCADE NOT NULL,
+	id_culture INTEGER REFERENCES culture(id) ON DELETE CASCADE NOT NULL 
+);
+CREATE TABLE society_have_task(
+	id serial PRIMARY KEY,
+	id_society INTEGER REFERENCES society(id) ON DELETE CASCADE NOT NULL,
+	id_task INTEGER REFERENCES task(id) ON DELETE CASCADE NOT NULL 
+);
+INSERT INTO society(name)
 VALUES
-	('Tina', 17),
-	('Daniel', 14),
-	('ALEX', 20);
-
-INSERT INTO ANIMAL(name)
+	('Diaspor society'),
+	('Liz society');
+INSERT INTO city(name, id_society)
 VALUES
-	('sloth'),
-	('seabird'),
-	('lizard');
-	
-INSERT INTO ACTION(name)
+	('Diaspor',1),
+	('Liz',2);
+INSERT INTO task(name, difficulty)
 VALUES
-	('wait'),
-	('stop'),
-	('appear'),
-	('watch');
-
-INSERT INTO PERSON_ACTION(action_id, person_id)
+	('save culture', 'normal'),
+	('combine culture', 'hard');
+INSERT INTO culture(name)
+VALUES
+	('Diaspor culture'),
+	('Liz culture');
+INSERT INTO barrier(name, id_city)
+VALUES
+	('Diaspor barrier', 1),
+	('Liz barrier', 2);
+INSERT INTO society_have_task(id_society, id_task)
+VALUES
+	(1,2),
+	(2,1);
+INSERT INTO society_have_culture(id_society,id_culture)
 VALUES
 	(1,1),
-	(1,2),
-	(3,3);
-
-INSERT INTO ANIMAL_ACTION(action_id, animal_id)
-VALUES
-	(3,3),
-	(1,2);
-	
-INSERT INTO SOUND(name, person_id, animal_id)
-VALUES
-	('chirping', 1, 1),
-	('rustling', 3, 2);
-	
-
-
+	(2,2);
