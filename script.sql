@@ -16,7 +16,7 @@ CREATE TABLE society(
 CREATE TABLE city(
 	id serial PRIMARY KEY,
 	name text NOT NULL UNIQUE,
-	id_society INTEGER REFERENCES society(id) ON DELETE CASCADE NOT NULL 
+	id_society INTEGER REFERENCES society(id) ON DELETE SET NULL
 );
 CREATE TABLE task(
 	id serial PRIMARY KEY,
