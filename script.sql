@@ -9,14 +9,14 @@ DROP TABLE IF EXISTS
 	society_have_task
 	CASCADE;
 CREATE TYPE DIFFICULTY AS ENUM ('easy', 'normal', 'hard');
-CREATE TABLE society(
-    id serial PRIMARY KEY,
-	name text NOT NULL
-);
 CREATE TABLE city(
 	id serial PRIMARY KEY,
-	name text NOT NULL UNIQUE,
-	id_society INTEGER REFERENCES society(id) ON DELETE SET NULL
+	name text NOT NULL UNIQUE
+);
+CREATE TABLE society(
+    id serial PRIMARY KEY,
+	name text NOT NULL,
+	id_city INTEGER REFERENCES city(id) ON DELETE CASCADE NOT NULL
 );
 CREATE TABLE task(
 	id serial PRIMARY KEY,
@@ -42,14 +42,15 @@ CREATE TABLE society_have_task(
 	id_society INTEGER REFERENCES society(id) ON DELETE CASCADE NOT NULL,
 	id_task INTEGER REFERENCES task(id) ON DELETE CASCADE NOT NULL 
 );
-INSERT INTO society(name)
+
+INSERT INTO city(name)
 VALUES
-	('Diaspor society'),
-	('Liz society');
-INSERT INTO city(name, id_society)
+	('Diaspor'),
+	('Liz');
+INSERT INTO society(name, id_city)
 VALUES
-	('Diaspor',1),
-	('Liz',2);
+	('Diaspor society', 1),
+	('Liz society', 2);
 INSERT INTO task(name, difficulty)
 VALUES
 	('save culture', 'normal'),
